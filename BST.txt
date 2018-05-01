@@ -1,0 +1,347 @@
+#include <iostream>
+using namespace std;
+
+class BstNode
+{
+	friend class BST; // friend 선언
+private:
+	int data;
+	BstNode *RL;
+	BstNode *LL;
+public:
+	BstNode(int element = 0, BstNode *L_next = NULL, BstNode *R_next = NULL) // 생성자 및 초기값 설정
+	{
+		data = element, LL = L_next, RL = R_next;
+	}
+};
+
+class BST
+{
+private:
+	BstNode * root;
+	void inorder(BstNode *CurrentNode);
+
+public:
+	BST() { root = NULL; } // 생성자 함수
+	bool insert(const int &x); // 데이터 삽입 함수
+	bool Delete(const int &x); // 데이터 삭제 함수
+	bool search(const int &x); //데이터 탐색 함수
+	void inorder();
+};
+
+bool BST::insert(const int &x) // 데이터 삽입 함수
+{
+	BstNode *p = root;
+	BstNode *q = 0; // p의 부모노드 포인터
+
+	while (p) // 위치 이동
+	{
+		q = p;
+		if (x == p->data) // 동일한 노드값이 존재할 경우
+		{
+			cout << "트리에 동일한 노드값이 존재합니다. \n";
+			return false;
+		}
+		else if (x < p->data)
+		{
+			p = p->LL;
+		}
+		else
+			p = p->RL;
+	}
+
+	arr = (struct Something *)malloc(sizeof(struct Something) * size);
+	Book*  p = (Book*)malloc( sizeof(Book) );
+
+	p = new BstNode(x); // 노드 동적 생성
+
+	if (!root) // 빈 트리의 경우
+		root = p;
+
+	else if (x < q->data)
+		q->LL = p;
+
+	else
+		q->RL = p;
+
+	return true;
+}
+
+bool BST::Delete(const int &x) // 데이터 삭제 함수
+{
+	BstNode *p = root;
+	BstNode *q = 0; // q는 p의 부모노드
+
+	while (1) // p, q 위치 이동
+	{
+		if (x == p->data)
+		{
+			break;
+		}
+
+		else if (x < p->data)
+		{
+			if (p->LL == NULL) // 찾는 값이 없는 경우
+			{
+				cout << "찾는 값이 없습니다. 다시 확인하세요 \n";
+				return false;
+			}
+
+			q = p;
+			p = p->LL;
+		}
+
+		else if (x > p->data)
+		{
+			if (p->RL == NULL) // 찾는 값이 없는 경우
+			{
+				cout << "찾는 값이 없습니다. 다시 확인하세요 \n";
+				return false;
+			}
+			q = p;
+			p = p->RL;
+		}
+	}
+
+	if ((p->LL == NULL) && (p->RL == NULL)) // 단일 노드의 삭제
+	{
+		if (p == root) // root 노드 삭제의 경우
+		{
+			cout << "유일하게 남은 노드이므로 삭제할 수 없습니다. \n";
+			return false;
+		}
+
+		if (p == q->LL)
+			q->LL = NULL;
+		else
+			q->RL = NULL;
+		delete p;
+	}
+
+	else if ((p->LL != NULL) && (p->RL == NULL)) // 왼쪽 자식 노드가 있는 노드의 삭제
+	{
+		if (p == root) // root 노드 삭제의 경우
+		{
+			root = p->LL;
+		}
+
+		else {
+			if (p == q->LL)
+				q->LL = p->LL;
+			else
+				q->RL = p->LL;
+		}
+		delete p;
+	}
+
+	else if ((p->LL == NULL) && (p->RL != NULL)) // 오른쪽 자식 노드가 있는 노드의 삭제
+	{
+		if (p == root) // root 노드 삭제의 경우
+		{
+			root = p->RL;
+		}
+
+		else {
+			if (p == q->LL)
+				q->LL = p->RL;
+			else
+				q->RL = p->RL;
+		}
+		delete p;
+	}
+
+	else if ((p->LL != NULL) && (p->RL != NULL)) // 2개의 자식 노드가 있는 노드의 삭제 (왼쪽 서브트리에서 가장 큰 노드로 대체)
+	{
+		BstNode *t;
+
+		q = p; // q는 삭제하려는 노드
+		p = p->LL; // p는 왼쪽 서브트리에서 가장 큰 노드
+		t = p; // t는 p의 이전 노드
+
+		while (1) // p, t 이동
+		{
+			if (p->RL == NULL)
+				break;
+			else {
+				t = p;
+				p = p->RL;
+			}
+		}
+
+		q->data = p->data; // 데이터 값 대입
+
+		if (t != p) // 삭제하려는 노드로부터 거리가 1 초과인 경우
+		{
+			if (p->LL != NULL)
+				t->RL = p->LL;
+			else
+				t->RL = NULL;
+			delete p;
+		}
+
+		else // 삭제하려는 노드로부터 거리가 1인 경우
+		{
+			q->LL = NULL;
+			delete p;
+		}
+	}
+	return true;
+}
+
+void BST::inorder() // 중위순회 Driver
+{
+	inorder(root);
+}
+
+void BST::inorder(BstNode *CurrentNode) // 중위순회 WorkHorse
+{
+	if (CurrentNode != 0)
+	{
+		inorder(CurrentNode->LL);
+		cout << CurrentNode->data << " ";
+		inorder(CurrentNode->RL);
+	}
+}
+
+bool BST::search(const int &x) // 데이터 탐색 함수
+{
+	BstNode *p = root;
+	BstNode *q = 0; // q는 p의 부모노드
+
+	while (1) // p,q 위치 이동
+	{
+
+		if (x == p->data)
+		{
+			break;
+		}
+		else if (x < p->data)
+		{
+			if (p->LL == NULL) // 찾는 값이 없을 경우
+			{
+				cout << "찾는 값이 없습니다. 다시 확인하세요 \n";
+				return false;
+			}
+			q = p;
+			p = p->LL;
+		}
+		else if (x > p->data)
+		{
+			if (p->RL == NULL) // 찾는 값이 없을 경우
+			{
+				cout << "찾는 값이 없습니다. 다시 확인하세요 \n";
+				return false;
+			}
+			q = p;
+			p = p->RL;
+		}
+	}
+
+	if (q == 0) { // 루트 노드의 경우
+		if (x == p->data)
+		{
+			cout << endl << x << "은(는)" << " root 노드입니다.\n";
+			if (p->LL != NULL)
+				cout << "왼쪽 자식 : " << p->LL->data << endl;
+			if (p->RL != NULL)
+				cout << "오른쪽 자식 : " << p->RL->data << endl;
+		}
+	}
+
+	else { // 루트 노드가 아닌 경우
+		if (x == p->data)
+		{
+			cout << endl << x << "은(는)" << q->data << " 의 자식입니다." << endl;
+			if (p->LL != NULL)
+				cout << "왼쪽 자식 : " << p->LL->data << endl << endl;
+			if (p->RL != NULL)
+				cout << "오른쪽 자식 : " << p->RL->data << endl << endl;
+			if ((p->LL == NULL) && (p->RL == NULL))
+				cout << "단일노드입니다. \n";
+		}
+
+		else if (x < p->data)
+			p = p->LL;
+
+		else
+			p = p->RL;
+	}
+
+	return true;
+}
+
+int main()
+{
+	int num, i;
+	BST B;
+
+	for (i = 0; i < 10; i++) {
+		cout << i + 1 << "번째 숫자 입력 : ";
+		cin >> num;
+		if (B.insert(num) == false)
+			i--;
+	}
+
+	cout << endl << "중위순회 결과 :";
+	B.inorder();
+	cout << endl << endl;
+
+	for (i = 0; i < 2; i++) {
+		cout << i + 1 << "번째 탐색 숫자 입력 : ";
+		cin >> num;
+		if (B.search(num) == false)
+			i--;
+		cout << endl;
+	}
+
+	for (i = 0; i < 2; i++) {
+		cout << i + 1 << "번째 삭제 숫자 입력 : ";
+		cin >> num;
+		if (B.Delete(num) == false)
+			i--;
+		else
+			cout << "\n삭제되었습니다.\n\n";
+	}
+
+	for (i = 0; i < 2; i++) {
+		cout << i + 1 << "번째 탐색 숫자 입력 : ";
+		cin >> num;
+		if (B.search(num) == false)
+			i--;
+		cout << endl;
+	}
+
+	for (i = 0; i < 5; i++) {
+		cout << i + 1 << "번째 숫자 입력 : ";
+		cin >> num;
+		if (B.insert(num) == false)
+			i--;
+	}
+
+	cout << endl << "중위순회 결과 :";
+	B.inorder();
+	cout << endl << endl;
+
+	for (i = 0; i < 2; i++) {
+		cout << i + 1 << "번째 탐색 숫자 입력 : ";
+		cin >> num;
+		if (B.search(num) == false)
+			i--;
+		cout << endl;
+	}
+
+	for (i = 0; i < 2; i++) {
+		cout << i + 1 << "번째 삭제 숫자 입력 : ";
+		cin >> num;
+		if (B.Delete(num) == false)
+			i--;
+		else
+			cout << "\n삭제되었습니다.\n\n";
+	}
+
+	cout << endl << "중위순회 결과 :";
+	B.inorder();
+	cout << endl << endl;
+
+	return 0;
+}
