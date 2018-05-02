@@ -9,3 +9,5 @@ git status
 git commit -m "Message"
 
 git push
+
+* git clean -f
