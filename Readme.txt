@@ -10,4 +10,4 @@ git commit -m "Message"
 
 git push
 
-* git clean -f
+* git clean -f!
